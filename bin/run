@@ -38,4 +38,4 @@ esac
 # MAIN ########################################################################
 echo "Running docker image ${_USER}/${_PROJECT}:${_ENV}"
 echo " - MOUNT ARGS: ${_MOUNTARGS}"
-doas docker run ${_MOUNTARGS} "${_USER}/${_PROJECT}:${_ENV}"
+doas docker run ${_MOUNTARGS} --publish 5000:5000 "${_USER}/${_PROJECT}:${_ENV}"

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # vim: set syntax=dockerfile:
 
-FROM rhlobo/python-flask-minimal-base
+FROM rhlobo/python3-minimal-base
 
 
 # [Optional] Uncomment this section to install additional OS packages.

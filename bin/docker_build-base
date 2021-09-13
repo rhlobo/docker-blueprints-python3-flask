@@ -19,6 +19,17 @@ _BASEDIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && cd .. && pwd )"
 _PROJECT=${PWD##*/}
 
 
+# VALIDATION ##################################################################
+# Base image name
+fix_base_image_references() {
+    local _EXT=$1
+    local _PATH=$2
+    sed -ri "s#^FROM ([^/]*).*#FROM \1\/${_PROJECT}-base#g" "${_PATH}Dockerfile.${_EXT}"
+}
+fix_base_image_references "dev" ".devcontainer/"
+fix_base_image_references "prod"
+
+
 # MAIN ########################################################################
 echo "Building docker image ${_USER}/${_PROJECT}-base"
 doas docker build --tag "${_USER}/${_PROJECT}-base" --file "Dockerfile.base" .

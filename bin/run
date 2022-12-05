@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+### DIRECTORIES
+CRRDIR="$(pwd)"
+BINDIR="$(dirname "$(readlink -f "$0")")"
+APPDIR="$( cd -P "${BINDIR}/.." >/dev/null 2>&1 && pwd )"
+
+
+### LOGIC
+cd "${APPDIR}"
+python app.py "$@" || exit 1
+cd "${CRRDIR}"

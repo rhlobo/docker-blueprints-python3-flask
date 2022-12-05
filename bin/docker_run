@@ -3,7 +3,7 @@
 
 
 # VARIABLES ###################################################################
-_USER=${SUDO_USER}
+_USER=${SUDO_USER:-$(logname)}
 _HOME=$(eval echo ~${_USER})
 
 # Script base directory (resolving symlinks)
@@ -18,15 +18,20 @@ _BASEDIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && cd .. && pwd )"
 
 _PROJECT=${PWD##*/}
 _ENV=${1:-dev}
+_TAG=''
+_EXECARGS=''
+_CMD=''
 
 
 # VALIDATION ##################################################################
 case $_ENV in
     dev)
         _MOUNTARGS="--mount type=bind,source="${_BASEDIR}",target=/app"
+        _TAG='dev'
         ;;
     prod)
         _MOUNTARGS=""
+        _TAG='latest'
         ;;
     *)
         echo "ERROR: Build env not known: $_ENV"
@@ -34,8 +39,14 @@ case $_ENV in
         ;;
 esac
 
+if [ $# -gt 1 ]; then
+    echo "Found extra arguments... Will run interactively."
+    _EXECARGS='-it'
+    _CMD='bin/run'
+fi
+
 
 # MAIN ########################################################################
-echo "Running docker image ${_USER}/${_PROJECT}:${_ENV}"
-echo " - MOUNT ARGS: ${_MOUNTARGS}"
-doas docker run ${_MOUNTARGS} --publish 5000:5000 "${_USER}/${_PROJECT}:${_ENV}"
+echo "Running docker image ${_USER}/${_PROJECT}:${_TAG} (${_ENV})"
+echo " - MOUNT ARGS: '${_MOUNTARGS}'"
+docker run ${_EXECARGS} ${_MOUNTARGS} "${_USER}/${_PROJECT}:${_TAG}" "${_CMD}" "${@:2}"

@@ -1,0 +1,27 @@
+#!/bin/bash
+# vim: set syntax=bash:
+
+
+# VARIABLES ###################################################################
+BINDIR="$(dirname "$(readlink -f "$0")")"
+_USER=${SUDO_USER:-$(logname)}
+_PROJECT=${PWD##*/}
+_ENV='prod'
+_TAG='latest'
+_EXECARGS='-d --restart unless-stopped'
+_CMD=''
+
+
+# VALIDATION ##################################################################
+if [ $# -gt 0 ]; then
+    echo "Found extra arguments... Will run interactively."
+    _EXECARGS='-it'
+    _CMD='bin/run'
+fi
+
+
+# MAIN ########################################################################
+echo "Building docker image..."
+${BINDIR}/docker_build ${_ENV} > /dev/null
+echo "Running docker image ${_USER}/${_PROJECT}:${_TAG} (${_ENV})"
+docker run "${_EXECARGS}" "${_USER}/${_PROJECT}:${_TAG}" "${_CMD}" "${@:2}"

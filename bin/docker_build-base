@@ -3,7 +3,7 @@
 
 
 # VARIABLES ###################################################################
-_USER=${SUDO_USER}
+_USER=${SUDO_USER:-$(logname)}
 _HOME=$(eval echo ~${_USER})
 
 # Script base directory (resolving symlinks)

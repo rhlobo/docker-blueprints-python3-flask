@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+### DIRECTORIES
+CRRDIR="$(pwd)"
+BINDIR="$(dirname "$(readlink -f "$0")")"
+APPDIR="$( cd -P "${BINDIR}/.." >/dev/null 2>&1 && pwd )"
+
+
+### LOGIC
+until "${BINDIR}/run"; do
+    echo "CRASHED with exit code $?.  Respawning..." >&2
+    sleep 5
+done
